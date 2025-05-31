@@ -1,0 +1,4 @@
+numpy
+ttkbootstrap
+matplotlib
+pyserial
