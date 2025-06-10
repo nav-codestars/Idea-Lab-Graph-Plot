@@ -24,12 +24,14 @@ style.configure(
 
 min_quantity = tkinter_cl.create_input({'padx': 10, 'pady': 10}, {'padx': 10, 'pady': 10}, "Minimum Quantity Value")
 max_quantity = tkinter_cl.create_input({'padx': 10, 'pady': 10}, {'padx': 10, 'pady': 10}, "Maximum Quantity Value")
+y_label = tkinter_cl.create_input({'padx': 10, 'pady': 10}, {'padx': 10, 'pady': 10}, "Y Label")
+title = tkinter_cl.create_input({'padx': 10, 'pady': 10}, {'padx': 10, 'pady': 10}, "Title of Graph")
 
 graph = Graph()
 
 # Attempt to connect to serial port
 try:
-    serial_cl = SerialClass('COM6', 9600, timeout=1)
+    serial_cl = SerialClass('COM4', 9600, timeout=1)
     if not serial_cl.ser.is_open:
         raise Exception("Serial port is not open")
 except Exception:
@@ -52,8 +54,17 @@ btn = tkinter_cl.create_button(
         min_quantity.get(),
         max_quantity.get(),
         tkinter_cl.root,
-        safe_serial_read
+        safe_serial_read,
+        y_label.get(),
+        title.get()
     ),
+    "Custom.TButton",
+    {'pady': 10}
+)
+
+save_to_pdf_btn = tkinter_cl.create_button(
+    'Save graph to pdf',
+    lambda: graph.save_as_pdf('graph_output.pdf'),
     "Custom.TButton",
     {'pady': 10}
 )

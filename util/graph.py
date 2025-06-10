@@ -17,6 +17,11 @@ class Graph:
         self._ax.tick_params(colors="#22223B")
         for spine in self._ax.spines.values():
             spine.set_color('#E0E1DD')
+        
+
+        self._ax.set_xlabel("Time (s)", fontdict={'fontsize': 12, 'fontweight': 'bold', 'color': '#22223B'})
+        self._ax.set_ylabel("Distance (cm)", fontdict={'fontsize': 12, 'fontweight': 'bold', 'color': '#22223B'})
+        self._ax.set_title("Real-time Distance Measurement", fontsize=16, fontweight='bold', color="#22223B")
 
     def data_gen(self, data_fetch):
         t = 0
@@ -38,7 +43,7 @@ class Graph:
         self._ax.set_xlim(max(0, t - 100), max(100, t + 10))
         return self._line,
 
-    def toggle_frame(self, min_quantity, max_quantity, root, action):
+    def toggle_frame(self, min_quantity, max_quantity, root, action, y_label, title):
         try:
             min_val = int(min_quantity)
             max_val = int(max_quantity)
@@ -46,7 +51,8 @@ class Graph:
             from tkinter import messagebox
             messagebox.showerror("Input Error", "Please enter valid integer values for min and max.")
             return
-
+        self._ax.set_ylabel(y_label, fontdict={'fontsize': 12, 'fontweight': 'bold', 'color': '#22223B'})
+        self._ax.set_title(title, fontsize=16, fontweight='bold', color="#22223B")
         # Remove previous canvas if it exists
         if self._canvas is not None:
             try:
@@ -71,3 +77,13 @@ class Graph:
             blit=False
         )
         self._canvas.draw_idle()
+    
+    
+    def save_as_pdf(self, filename="graph_output.pdf"):
+        """
+        Save the current graph as a PDF file.
+        :param filename: The filename for the PDF (default: 'graph_output.pdf')
+        """
+        self._fig.savefig(filename, format='pdf')
+        print(f"Graph saved as {filename}")
+    
