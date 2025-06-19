@@ -22,8 +22,9 @@ style.configure(
 
 # --- Layout: Create left (graph) and right (inputs) frames ---
 left_frame = tk.Frame(tkinter_cl.root, bg="#F5F7FA")
-right_frame = tk.Frame(tkinter_cl.root, bg="#FFFFFF")
+right_frame = tk.Frame(tkinter_cl.root, bg="#FFFFFF", width=300, height=600)
 right_frame.pack(fill=None, expand=True)
+right_frame.pack_propagate(False)
 
 # Spacer to push input fields to the bottom
 spacer = tk.Frame(right_frame, bg="#FFFFFF")
@@ -86,6 +87,9 @@ try:
         raise Exception("Serial port is not open")
 except Exception:
     serial_cl = None
+
+tkinter_cl.root.protocol("WM_DELETE_WINDOW", lambda: tkinter_cl.root.destroy())
+
 
 tkinter_cl.run_loop()
 

@@ -73,7 +73,9 @@ class Graph:
             self.update,
             frames=lambda: self.data_gen(action),
             interval=1000,
-            blit=False
+            blit=False,
+            cache_frame_data=False,
+            save_count=200
         )
         self._canvas.draw_idle()
 
