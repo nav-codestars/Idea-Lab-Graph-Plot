@@ -22,7 +22,7 @@ style.configure(
 
 # --- Layout: Create left (graph) and right (inputs) frames ---
 left_frame = tk.Frame(tkinter_cl.root, bg="#F5F7FA")
-right_frame = tk.Frame(tkinter_cl.root, bg="#FFFFFF", width=300, height=600)
+right_frame = tk.Frame(tkinter_cl.root, bg="#FFFFFF", width=350, height=600)
 right_frame.pack(fill=None, expand=True)
 right_frame.pack_propagate(False)
 
@@ -40,28 +40,23 @@ max_quantity = tkinter_cl.create_input(input_frame, "Maximum Quantity Value", de
 y_label = tkinter_cl.create_input(input_frame, "Y Label", default="Distance (cm)")
 title = tkinter_cl.create_input(input_frame, "Title of Graph", default="Real-time Distance Measurement")
 
-def safe_serial_read():
-    try:
-        if serial_cl is None or not hasattr(serial_cl, 'ser') or not serial_cl.ser.is_open:
-            messagebox.showerror("Serial Error", "Serial monitor is not connected!")
-            return 0
-        data = serial_cl.get_serial_print()
-        return data if data else 0
-    except Exception:
-        messagebox.showerror("Serial Error", "Failed to read from serial monitor!")
-        return 0
 
 def button_click_action():
+    if serial_cl is None or not hasattr(serial_cl, 'ser') or not getattr(serial_cl.ser, 'is_open', False):
+        messagebox.showerror("Serial Error", "Serial monitor is not connected!")
+        return
     graph.toggle_frame(
         min_quantity.get(),
         max_quantity.get(),
         left_frame,
-        safe_serial_read,
+        serial_cl.get_serial_print,
         y_label.get(),
         title.get()
     )
     left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-    right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+    right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=False)
+    right_frame.pack_propagate(False)
+
 
 btn = tkinter_cl.create_button(
     input_frame,
@@ -83,12 +78,19 @@ graph = Graph()
 # Attempt to connect to serial port
 try:
     serial_cl = SerialClass('COM6', 9600, timeout=1)
-    if not serial_cl.ser.is_open:
-        raise Exception("Serial port is not open")
 except Exception:
     serial_cl = None
 
-tkinter_cl.root.protocol("WM_DELETE_WINDOW", lambda: tkinter_cl.root.destroy())
+def window_close():
+    tkinter_cl.running = False
+    tkinter_cl.root.destroy()
+    if serial_cl is not None:
+        serial_cl.close_serial()
+    if graph:
+        graph.stop_animation()
+    exit(0)
+
+tkinter_cl.root.protocol("WM_DELETE_WINDOW", window_close)
 
 
 tkinter_cl.run_loop()

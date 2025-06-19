@@ -10,7 +10,7 @@ class Graph:
         self._x_data, self._y_data = [], []
         self._line, = self._ax.plot([], [], color="#3B82F6")  # Soft blue
         self._canvas = None  # Track the current canvas
-
+        self.running = True
         # Subtle background and axis styling
         self._fig.patch.set_facecolor("#FFFFFF")
         self._ax.set_facecolor("#F5F7FA")
@@ -23,7 +23,7 @@ class Graph:
 
     def data_gen(self, data_fetch):
         t = 0
-        while True:
+        while self.running:
             try:
                 data = data_fetch()
                 y = int(data)
@@ -82,5 +82,7 @@ class Graph:
     def save_as_pdf(self, filename="graph_output.pdf"):
         self._fig.savefig(filename, format='pdf')
         print(f"Graph saved as {filename}")
-
-
+    
+    def stop_animation(self):
+        if self._ani is not None:
+            self._ani.event_source.stop()
