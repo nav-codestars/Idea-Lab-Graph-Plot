@@ -23,3 +23,6 @@ class SerialClass:
     def get_ports():
         return list(serial.tools.list_ports.comports())
 
+
+
+

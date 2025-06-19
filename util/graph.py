@@ -17,8 +17,6 @@ class Graph:
         self._ax.tick_params(colors="#22223B")
         for spine in self._ax.spines.values():
             spine.set_color('#E0E1DD')
-        
-
         self._ax.set_xlabel("Time (s)", fontdict={'fontsize': 12, 'fontweight': 'bold', 'color': '#22223B'})
         self._ax.set_ylabel("Distance (cm)", fontdict={'fontsize': 12, 'fontweight': 'bold', 'color': '#22223B'})
         self._ax.set_title("Real-time Distance Measurement", fontsize=16, fontweight='bold', color="#22223B")
@@ -51,8 +49,10 @@ class Graph:
             from tkinter import messagebox
             messagebox.showerror("Input Error", "Please enter valid integer values for min and max.")
             return
+
         self._ax.set_ylabel(y_label, fontdict={'fontsize': 12, 'fontweight': 'bold', 'color': '#22223B'})
         self._ax.set_title(title, fontsize=16, fontweight='bold', color="#22223B")
+
         # Remove previous canvas if it exists
         if self._canvas is not None:
             try:
@@ -60,15 +60,14 @@ class Graph:
             except Exception as e:
                 print("Error destroying previous canvas:", e)
             self._canvas = None
-            self._x_data, self._y_data = [], []
 
+        self._x_data, self._y_data = [], []
         self._ax.set_ylim(min_val, max_val)
         self._ax.set_xlim(0, 1000)
 
         self._canvas = FigureCanvasTkAgg(self._fig, master=root)
         self._canvas.draw()
         self._canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-
         self._ani = animation.FuncAnimation(
             self._fig,
             self.update,
@@ -77,13 +76,9 @@ class Graph:
             blit=False
         )
         self._canvas.draw_idle()
-    
-    
+
     def save_as_pdf(self, filename="graph_output.pdf"):
-        """
-        Save the current graph as a PDF file.
-        :param filename: The filename for the PDF (default: 'graph_output.pdf')
-        """
         self._fig.savefig(filename, format='pdf')
         print(f"Graph saved as {filename}")
-    
+
+
