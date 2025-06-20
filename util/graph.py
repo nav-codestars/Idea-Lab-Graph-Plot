@@ -23,13 +23,18 @@ class Graph:
 
     def data_gen(self, data_fetch):
         t = 0
+        prev = 0
         while self.running:
             try:
                 data = data_fetch()
-                y = float(data)
+                if data is None:
+                    y = prev
+                else:
+                    y = float(data)
+                    prev = y
                 yield t, y
                 t += 1
-                print(t, data)  # Debugging output
+                print(t, y)  # Debugging output
             except (ValueError, UnicodeDecodeError):
                 continue
 

@@ -36,7 +36,6 @@ class SerialClass:
 
     def get_serial_print(self):
         try:
-            print(self.data_queue.get_nowait())
             return self.data_queue.get_nowait()
         except queue.Empty:
             return None
