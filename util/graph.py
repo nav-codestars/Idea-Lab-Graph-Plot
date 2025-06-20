@@ -26,7 +26,7 @@ class Graph:
         while self.running:
             try:
                 data = data_fetch()
-                y = int(data)
+                y = float(data)
                 yield t, y
                 t += 1
                 print(t, data)  # Debugging output

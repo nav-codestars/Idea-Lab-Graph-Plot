@@ -77,7 +77,7 @@ graph = Graph()
 
 # Attempt to connect to serial port
 try:
-    serial_cl = SerialClass('COM4', 9600, timeout=0)
+    serial_cl = SerialClass('COM4', 9600, timeout=1)
 except Exception as e:
     print(e)
 
