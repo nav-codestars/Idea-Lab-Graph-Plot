@@ -7,8 +7,8 @@ class SerialClass:
             self.ser = serial.Serial(port=port_name, baudrate=baud_rate, timeout=timeout)
         except serial.SerialException as e: 
             print(f"Serial port error during initialization: {e}")
-            self.ser = None
-        return self.ser
+        except Exception as e:
+            print(e)
 
     def get_serial_print(self):
         if self.ser is None or not self.ser.is_open:

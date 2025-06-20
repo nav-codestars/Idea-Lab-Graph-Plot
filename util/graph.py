@@ -68,6 +68,7 @@ class Graph:
         self._canvas = FigureCanvasTkAgg(self._fig, master=root)
         self._canvas.draw()
         self._canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        print('heloo')
         self._ani = animation.FuncAnimation(
             self._fig,
             self.update,

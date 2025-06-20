@@ -77,17 +77,16 @@ graph = Graph()
 
 # Attempt to connect to serial port
 try:
-    serial_cl = SerialClass('COM6', 9600, timeout=1)
-except Exception:
-    serial_cl = None
+    serial_cl = SerialClass('COM4', 9600, timeout=0)
+except Exception as e:
+    print(e)
 
 def window_close():
     tkinter_cl.running = False
+    print(graph)
     tkinter_cl.root.destroy()
     if serial_cl is not None:
         serial_cl.close_serial()
-    if graph:
-        graph.stop_animation()
     exit(0)
 
 tkinter_cl.root.protocol("WM_DELETE_WINDOW", window_close)
