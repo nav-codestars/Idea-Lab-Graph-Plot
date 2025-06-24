@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 from matplotlib import animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from tkinter import filedialog
 
 class Graph:
     def __init__(self):
@@ -21,9 +22,15 @@ class Graph:
         self._ax.set_ylabel("Distance (cm)", fontdict={'fontsize': 12, 'fontweight': 'bold', 'color': '#22223B'})
         self._ax.set_title("Real-time Distance Measurement", fontsize=16, fontweight='bold', color="#22223B")
 
-    def data_gen(self, data_fetch):
+    def data_gen(self, data_fetch, update_callback=None):
+
         t = 0
         prev = 0
+        min_temp = None
+        max_temp = None
+        sum_temp = 0
+        count = 0
+        avg_temp = None
         while self.running:
             try:
                 data = data_fetch()
@@ -31,10 +38,16 @@ class Graph:
                     y = prev
                 else:
                     y = float(data)
+                    min_temp = min(min_temp, y) if min_temp is not None else y
+                    max_temp = max(max_temp, y) if max_temp is not None else y
+                    sum_temp += y
+                    count += 1
+                    avg_temp = sum_temp / count if count > 0 else 0
                     prev = y
                 yield t, y
                 t += 1
-                print(t, y)  # Debugging output
+                print(min_temp, max_temp, avg_temp)  # Debugging output
+                update_callback(min_temp, max_temp, avg_temp)
             except (ValueError, UnicodeDecodeError):
                 continue
 
@@ -46,7 +59,7 @@ class Graph:
         self._ax.set_xlim(max(0, t - 100), max(100, t + 10))
         return self._line,
 
-    def toggle_frame(self, min_quantity, max_quantity, root, action, y_label, title):
+    def toggle_frame(self, min_quantity, max_quantity, root, action, y_label, title, update_callback=None):
         try:
             min_val = int(min_quantity)
             max_val = int(max_quantity)
@@ -77,7 +90,7 @@ class Graph:
         self._ani = animation.FuncAnimation(
             self._fig,
             self.update,
-            frames=lambda: self.data_gen(action),
+            frames=lambda: self.data_gen(action, update_callback=update_callback),
             interval=1000,
             blit=False,
             cache_frame_data=False,
@@ -86,8 +99,10 @@ class Graph:
         self._canvas.draw_idle()
 
     def save_as_pdf(self, filename="graph_output.pdf"):
-        self._fig.savefig(filename, format='pdf')
-        print(f"Graph saved as {filename}")
+        file_path = filedialog.asksaveasfilename(defaultextension=".pdf",filetypes=[("PDF files", "*.pdf")],title="Save Graph As PDF")
+        if file_path:
+            self._fig.savefig(file_path, format='pdf')
+            print(f"Graph saved as {file_path}")
     
     def stop_animation(self):
         if self._ani is not None:

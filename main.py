@@ -5,8 +5,16 @@ from util.tkint import TkintClass
 from tkinter import messagebox
 import tkinter as tk
 
+def change_min_max_avg_values(min_val, max_val, avg_val):
+    if(min_val is not None):
+        min_value.config(text=f"Min: {min_val}")
+    if(max_val is not None):
+        max_value.config(text=f"Max: {max_val}")
+    if(avg_val is not None):
+        avg_value.config(text=f"Avg: {avg_val:.2f}")
+
 font_style = ('Segoe UI', 14)
-tkinter_cl = TkintClass('Graph tool', '1000x666', font_style, bg="#F5F7FA")
+tkinter_cl = TkintClass('Graph tool', '1500x1000', font_style, bg="#F5F7FA")
 
 # Create a custom button style
 style = Style()
@@ -22,7 +30,7 @@ style.configure(
 
 # --- Layout: Create left (graph) and right (inputs) frames ---
 left_frame = tk.Frame(tkinter_cl.root, bg="#F5F7FA")
-right_frame = tk.Frame(tkinter_cl.root, bg="#FFFFFF", width=350, height=650)
+right_frame = tk.Frame(tkinter_cl.root, bg="#FFFFFF", width=350, height=800)
 right_frame.pack(fill=None, expand=True)
 right_frame.pack_propagate(False)
 
@@ -58,9 +66,16 @@ com_combo.pack(fill=tk.X, pady=(0, 10))
 # Input fields and buttons in input_frame
 min_quantity = tkinter_cl.create_input(input_frame, "Minimum Quantity Value", default="10")
 max_quantity = tkinter_cl.create_input(input_frame, "Maximum Quantity Value", default="100")
-y_label = tkinter_cl.create_input(input_frame, "Y Label", default="Distance (cm)")
-title = tkinter_cl.create_input(input_frame, "Title of Graph", default="Real-time Distance Measurement")
+y_label = tkinter_cl.create_input(input_frame, "Y Label", default="Temeprature(°C)")
+title = tkinter_cl.create_input(input_frame, "Title of Graph", default="Real-time Temperature Measurement")
 
+min_value = tk.Label(input_frame, text="", font=("Helvetica", 16))
+max_value = tk.Label(input_frame, text="", font=("Helvetica", 16))
+avg_value = tk.Label(input_frame, text="", font=("Helvetica", 16))
+
+min_value.pack(anchor="center", fill="x", pady=(10, 0))
+max_value.pack(anchor="center", fill="x", pady=(0, 0)) 
+avg_value.pack(anchor="center", fill="x", pady=(0, 10))
 serial_cl = None  # Will be initialized on button click
 
 def button_click_action():
@@ -84,7 +99,8 @@ def button_click_action():
         left_frame,
         serial_cl.get_serial_print,
         y_label.get(),
-        title.get()
+        title.get(),
+        change_min_max_avg_values
     )
     left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
     right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=False)
